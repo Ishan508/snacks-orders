@@ -4,90 +4,74 @@
 <head>
     <title>Order Dashboard - Maharashtrian Snacks</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f8f9fa; }
-        h1 { color: #d35400; }
-        .dashboard { width: 80%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #aaa; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background: #e67e22; color: white; }
-        button { padding: 10px; background: #d35400; color: white; border: none; cursor: pointer; margin-top: 20px; }
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
+        h1 { color: #d35400; text-align: center; }
+        table { width: 90%; margin: 20px auto; border-collapse: collapse; box-shadow: 0 0 10px #aaa; }
+        th, td { padding: 12px; border: 1px solid #aaa; text-align: center; }
+        th { background: #d35400; color: white; }
+        tr:nth-child(even) { background: #f2f2f2; }
     </style>
 </head>
 
 <body>
-    <h1>?? Maharashtrian Snacks Dashboard</h1>
 
-    <div class="dashboard">
-        <h2>Order Summary</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Order No.</th>
-                    <th>Customer Name</th>
-                    <th>Address</th>
-                    <th>Vada Pav</th>
-                    <th>Misal Pav</th>
-                    <th>Puran Poli</th>
-                </tr>
-            </thead>
-            <tbody id="orderTable">
-                <!-- Orders will be displayed here -->
-            </tbody>
-        </table>
+    <h1>📊 Order Dashboard - Maharashtrian Snacks</h1>
 
-        <h3>Total Items Ordered:</h3>
-        <p>?? Vada Pav: <span id="totalVadaPav">0</span></p>
-        <p>?? Misal Pav: <span id="totalMisalPav">0</span></p>
-        <p>?? Puran Poli: <span id="totalPuranPoli">0</span></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Vada Pav</th>
+                <th>Misal Pav</th>
+                <th>Puran Poli</th>
+                <th>Order Time</th>
+            </tr>
+        </thead>
+        <tbody id="orderList"></tbody>
+    </table>
 
-        <button onclick="clearOrders()">Clear Orders</button>
-    </div>
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
 
     <script>
-        // Function to load and display orders
-        function loadOrders() {
-            // Retrieve orders from localStorage
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            let orderTable = document.getElementById('orderTable');
-            let totalVadaPav = 0, totalMisalPav = 0, totalPuranPoli = 0;
+        // Firebase configuration (same as your main page)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIvosQmzDmApd4nMRXJDgz6kE4V__sjI4",
+            authDomain: "snacks-orders.firebaseapp.com",
+            databaseURL: "https://snacks-orders-default-rtdb.firebaseio.com",
+            projectId: "snacks-orders",
+            storageBucket: "snacks-orders.appspot.com",
+            messagingSenderId: "360986868091",
+            appId: "1:360986868091:web:c26ee5fd258d663a6d65de",
+            measurementId: "G-C2XY3MKR0L"
+        };
 
-            // Clear existing rows in case of reload
-            orderTable.innerHTML = '';
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-            // Loop through orders and display them
-            orders.forEach((order, index) => {
-                orderTable.innerHTML += `
+        const orderList = document.getElementById('orderList');
+
+        // Fetch orders from Firebase in real-time
+        database.ref('orders/').on('value', (snapshot) => {
+            orderList.innerHTML = ''; // Clear table before updating
+            snapshot.forEach((order) => {
+                const data = order.val();
+                const row = `
                     <tr>
-                        <td>${index + 1}</td>
-                        <td>${order.name}</td>
-                        <td>${order.address}</td>
-                        <td>${order.vadapav}</td>
-                        <td>${order.misalpav}</td>
-                        <td>${order.puranpoli}</td>
+                        <td>${data.name}</td>
+                        <td>${data.address}</td>
+                        <td>${data.vadapav}</td>
+                        <td>${data.misalpav}</td>
+                        <td>${data.puranpoli}</td>
+                        <td>${new Date(data.timestamp).toLocaleString()}</td>
                     </tr>
                 `;
-
-                // Update totals
-                totalVadaPav += parseInt(order.vadapav) || 0;
-                totalMisalPav += parseInt(order.misalpav) || 0;
-                totalPuranPoli += parseInt(order.puranpoli) || 0;
+                orderList.innerHTML += row;
             });
-
-            // Update totals on the dashboard
-            document.getElementById('totalVadaPav').textContent = totalVadaPav;
-            document.getElementById('totalMisalPav').textContent = totalMisalPav;
-            document.getElementById('totalPuranPoli').textContent = totalPuranPoli;
-        }
-
-        // Function to clear all orders
-        function clearOrders() {
-            localStorage.removeItem('orders'); // Clear orders from storage
-            alert("All orders cleared!");
-            loadOrders(); // Refresh the dashboard
-        }
-
-        // Load orders when the page is opened
-        window.onload = loadOrders;
+        });
     </script>
 
 </body>
