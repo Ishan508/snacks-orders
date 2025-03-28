@@ -41,7 +41,7 @@
             <h3>Enter Your Details</h3>
             <input type="text" id="name" placeholder="Your Name" required>
             <input type="text" id="address" placeholder="Your Address" required>
-            <button onclick="placeOrder()">Place Order</button>
+            <button id="orderButton">Place Order</button>
         </div>
     </div>
 
@@ -49,7 +49,7 @@
         ✅ Thank you for placing your order! We will deliver it shortly.
     </div>
 
-    <!-- Firebase SDK (Version 8 for simple HTML use) -->
+    <!-- ✅ Firebase SDK (Version 8 for easier integration) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -70,6 +70,12 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // ✅ Ensure DOM is fully loaded before attaching event
+        window.addEventListener('DOMContentLoaded', () => {
+            // Attach click event AFTER page loads
+            document.getElementById('orderButton').addEventListener('click', placeOrder);
+        });
+
         // ✅ Function to Place Order
         function placeOrder() {
             // Collect Order Details
@@ -81,7 +87,7 @@
 
             // Validate Input
             if (!name || !address) {
-                alert("Please enter your name and address.");
+                alert("❌ Please enter your name and address.");
                 return;
             }
 
