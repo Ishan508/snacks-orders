@@ -14,11 +14,10 @@
         button:hover { background: #e67e22; }
         #thankYouMessage { display: none; font-size: 20px; color: green; margin-top: 20px; }
     </style>
-     // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-</head>
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js"></script>
+    
+     </head>
 
 <body>
     <h1>🍽️ Welcome to Maharashtrian Snacks</h1>
@@ -75,30 +74,39 @@
         const database = firebase.database();
 
         function placeOrder() {
-            const name = document.getElementById("name").value;
-            const address = document.getElementById("address").value;
-            const vadapav = document.getElementById("vadapav").value;
-            const misalpav = document.getElementById("misalpav").value;
-            const puranpoli = document.getElementById("puranpoli").value;
+    // Get input values
+    let name = document.getElementById("name").value;
+    let address = document.getElementById("address").value;
+    let vadapav = document.getElementById("vadapav").value;
+    let misalpav = document.getElementById("misalpav").value;
+    let puranpoli = document.getElementById("puranpoli").value;
 
-            if (!name || !address) {
-                alert("Please enter your name and address.");
-                return;
-            }
+    // Validate inputs
+    if (name === "" || address === "") {
+        alert("Please enter your name and address.");
+        return;
+    }
 
-            // Save order to Firebase
-            database.ref('orders').push({
-                name: name,
-                address: address,
-                vadapav: vadapav,
-                misalpav: misalpav,
-                puranpoli: puranpoli,
-                timestamp: Date.now()
-            });
+    // Create the order object
+    const order = {
+        name,
+        address,
+        vadapav,
+        misalpav,
+        puranpoli,
+        timestamp: new Date().toISOString()
+    };
 
-            // Hide form and show thank you message
+    // Push order to Firebase
+    database.ref('orders').push(order, (error) => {
+        if (error) {
+            alert("Error placing order. Please try again.");
+        } else {
+            // Success - hide form and show thank you message
             document.getElementById("orderForm").style.display = "none";
             document.getElementById("thankYouMessage").style.display = "block";
+        }
+    });
         }
     </script>
 
