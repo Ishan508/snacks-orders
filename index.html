@@ -17,23 +17,23 @@
 </head>
 
 <body>
-    <h1>?? Welcome to Maharashtrian Snacks</h1>
+    <h1>🍴 Welcome to Maharashtrian Snacks</h1>
 
     <div class="menu" id="orderForm">
         <h2>Today's Menu</h2>
 
         <div class="food-item">
-            <span>?? Vada Pav</span>
+            <span>🍔 Vada Pav</span>
             <input type="number" id="vadapav" min="0" max="10" value="0">
         </div>
 
         <div class="food-item">
-            <span>?? Misal Pav</span>
+            <span>🍛 Misal Pav</span>
             <input type="number" id="misalpav" min="0" max="10" value="0">
         </div>
 
         <div class="food-item">
-            <span>?? Puran Poli</span>
+            <span>🍪 Puran Poli</span>
             <input type="number" id="puranpoli" min="0" max="10" value="0">
         </div>
 
@@ -45,13 +45,33 @@
         </div>
     </div>
 
-    <!-- Thank you message -->
+    <!-- Thank You Message -->
     <div id="thankYouMessage">
-        ? Thank you for placing your order! We will deliver it shortly.
+        ✅ Thank you for placing your order! We will deliver it shortly.
     </div>
 
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+
     <script>
-        // Store and send orders to localStorage
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIvosQmzDmApd4nMRXJDgz6kE4V__sjI4",
+            authDomain: "snacks-orders.firebaseapp.com",
+            databaseURL: "https://snacks-orders-default-rtdb.firebaseio.com",
+            projectId: "snacks-orders",
+            storageBucket: "snacks-orders.appspot.com",
+            messagingSenderId: "360986868091",
+            appId: "1:360986868091:web:c26ee5fd258d663a6d65de",
+            measurementId: "G-C2XY3MKR0L"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Store and send orders to Firebase
         function placeOrder() {
             let name = document.getElementById("name").value;
             let address = document.getElementById("address").value;
@@ -64,13 +84,17 @@
                 return;
             }
 
-            // Save the order in localStorage
-            let order = { name, address, vadapav, misalpav, puranpoli };
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders.push(order);
-            localStorage.setItem('orders', JSON.stringify(orders));
+            // Save the order in Firebase
+            database.ref('orders/').push({
+                name: name,
+                address: address,
+                vadapav: vadapav,
+                misalpav: misalpav,
+                puranpoli: puranpoli,
+                timestamp: Date.now()
+            });
 
-            // Hide the form and show the thank you message
+            // Hide form and show thank you message
             document.getElementById("orderForm").style.display = "none";
             document.getElementById("thankYouMessage").style.display = "block";
         }
@@ -79,3 +103,5 @@
 </body>
 
 </html>
+
+
