@@ -14,10 +14,7 @@
         button:hover { background: #e67e22; }
         #thankYouMessage { display: none; font-size: 20px; color: green; margin-top: 20px; }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js"></script>
-    
-     </head>
+</head>
 
 <body>
     <h1>🍽️ Welcome to Maharashtrian Snacks</h1>
@@ -31,12 +28,12 @@
         </div>
 
         <div class="food-item">
-            <span>🍛 Misal Pav</span>
+            <span>🔥 Misal Pav</span>
             <input type="number" id="misalpav" min="0" max="10" value="0">
         </div>
 
         <div class="food-item">
-            <span>🥞 Puran Poli</span>
+            <span>🍪 Puran Poli</span>
             <input type="number" id="puranpoli" min="0" max="10" value="0">
         </div>
 
@@ -48,65 +45,66 @@
         </div>
     </div>
 
-    <!-- Thank You Message -->
     <div id="thankYouMessage">
         ✅ Thank you for placing your order! We will deliver it shortly.
     </div>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+    <!-- Firebase SDK (Version 8 for simple HTML use) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-        // Your Firebase Configuration
+        // ✅ Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBIvosQmzDmApd4nMRXJDgz6kE4V__sjI4",
             authDomain: "snacks-orders.firebaseapp.com",
-            databaseURL: "https://snacks-orders-default-rtdb.firebaseio.com/",
+            databaseURL: "https://snacks-orders-default-rtdb.firebaseio.com",
             projectId: "snacks-orders",
             storageBucket: "snacks-orders.appspot.com",
             messagingSenderId: "360986868091",
-            appId: "1:360986868091:web:c26ee5fd258d663a6d65de"
-             databaseURL: "https://snacks-orders-default-rtdb.firebaseio.com" };
+            appId: "1:360986868091:web:c26ee5fd258d663a6d65de",
+            measurementId: "G-C2XY3MKR0L"
+        };
 
-        // Initialize Firebase
+        // ✅ Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // ✅ Function to Place Order
         function placeOrder() {
-    // Get input values
-    let name = document.getElementById("name").value;
-    let address = document.getElementById("address").value;
-    let vadapav = document.getElementById("vadapav").value;
-    let misalpav = document.getElementById("misalpav").value;
-    let puranpoli = document.getElementById("puranpoli").value;
+            // Collect Order Details
+            const name = document.getElementById("name").value;
+            const address = document.getElementById("address").value;
+            const vadapav = document.getElementById("vadapav").value;
+            const misalpav = document.getElementById("misalpav").value;
+            const puranpoli = document.getElementById("puranpoli").value;
 
-    // Validate inputs
-    if (name === "" || address === "") {
-        alert("Please enter your name and address.");
-        return;
-    }
+            // Validate Input
+            if (!name || !address) {
+                alert("Please enter your name and address.");
+                return;
+            }
 
-    // Create the order object
-    const order = {
-        name,
-        address,
-        vadapav,
-        misalpav,
-        puranpoli,
-        timestamp: new Date().toISOString()
-    };
+            // Create Order Object
+            const order = {
+                name,
+                address,
+                vadapav,
+                misalpav,
+                puranpoli,
+                timestamp: new Date().toISOString()
+            };
 
-    // Push order to Firebase
-    database.ref('orders').push(order, (error) => {
-        if (error) {
-            alert("Error placing order. Please try again.");
-        } else {
-            // Success - hide form and show thank you message
-            document.getElementById("orderForm").style.display = "none";
-            document.getElementById("thankYouMessage").style.display = "block";
-        }
-    });
+            // Send Order to Firebase
+            database.ref("orders").push(order, (error) => {
+                if (error) {
+                    alert("❌ Error placing order. Please try again.");
+                } else {
+                    // Success Message
+                    document.getElementById("orderForm").style.display = "none";
+                    document.getElementById("thankYouMessage").style.display = "block";
+                }
+            });
         }
     </script>
 
@@ -114,5 +112,4 @@
 
 </html>
 
-    
 
