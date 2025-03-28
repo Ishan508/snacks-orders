@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Food Order - Maharashtrian Snacks</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f8f9fa; }
+        h1 { color: #d35400; }
+        .menu { width: 50%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #aaa; }
+        .food-item { display: flex; justify-content: space-between; padding: 10px 0; }
+        .order-form { margin-top: 20px; }
+        input, button { padding: 10px; margin: 10px; width: 80%; }
+        button { background: #d35400; color: white; border: none; cursor: pointer; }
+        button:hover { background: #e67e22; }
+        #thankYouMessage { display: none; font-size: 20px; color: green; margin-top: 20px; }
+    </style>
+</head>
+
+<body>
+    <h1>?? Welcome to Maharashtrian Snacks</h1>
+
+    <div class="menu" id="orderForm">
+        <h2>Today's Menu</h2>
+
+        <div class="food-item">
+            <span>?? Vada Pav</span>
+            <input type="number" id="vadapav" min="0" max="10" value="0">
+        </div>
+
+        <div class="food-item">
+            <span>?? Misal Pav</span>
+            <input type="number" id="misalpav" min="0" max="10" value="0">
+        </div>
+
+        <div class="food-item">
+            <span>?? Puran Poli</span>
+            <input type="number" id="puranpoli" min="0" max="10" value="0">
+        </div>
+
+        <div class="order-form">
+            <h3>Enter Your Details</h3>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="text" id="address" placeholder="Your Address" required>
+            <button onclick="placeOrder()">Place Order</button>
+        </div>
+    </div>
+
+    <!-- Thank you message -->
+    <div id="thankYouMessage">
+        ? Thank you for placing your order! We will deliver it shortly.
+    </div>
+
+    <script>
+        // Store and send orders to localStorage
+        function placeOrder() {
+            let name = document.getElementById("name").value;
+            let address = document.getElementById("address").value;
+            let vadapav = document.getElementById("vadapav").value;
+            let misalpav = document.getElementById("misalpav").value;
+            let puranpoli = document.getElementById("puranpoli").value;
+
+            if (name === "" || address === "") {
+                alert("Please enter your name and address.");
+                return;
+            }
+
+            // Save the order in localStorage
+            let order = { name, address, vadapav, misalpav, puranpoli };
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Hide the form and show the thank you message
+            document.getElementById("orderForm").style.display = "none";
+            document.getElementById("thankYouMessage").style.display = "block";
+        }
+    </script>
+
+</body>
+
+</html>
