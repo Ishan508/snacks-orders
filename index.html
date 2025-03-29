@@ -4,9 +4,9 @@
 <head>
     <title>Seema Kitchen - Maharashtrian Delights</title>
     <style>
-        /* Background and Global Styles */
+        /* Global Styles */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             background: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38') no-repeat center center/cover;
@@ -16,56 +16,66 @@
 
         /* Header Styling */
         header {
-            background: rgba(44, 62, 80, 0.9);
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
             color: white;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 40px 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
         h1 {
             margin: 0;
-            font-size: 3em;
+            font-size: 4em;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
+            animation: fadeInDown 1s ease;
         }
 
-        p {
-            margin: 5px 0;
-            font-size: 1.2em;
+        header p {
+            margin-top: 10px;
+            font-size: 1.5em;
+            font-weight: 300;
+            animation: fadeInUp 1s ease;
         }
 
         /* Main Container */
         .container {
-            padding: 40px;
-            max-width: 900px;
+            padding: 50px 20px;
+            max-width: 1000px;
             margin: auto;
         }
 
         /* Menu Section */
         .menu {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            margin-bottom: 50px;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .menu h2 {
+            color: #E74C3C;
+            font-size: 2.5em;
+            margin-bottom: 30px;
         }
 
         .food-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0;
-            font-size: 1.2em;
+            margin: 25px 0;
+            font-size: 1.3em;
         }
 
         /* Form Inputs and Button */
         input, button {
-            padding: 12px;
+            padding: 15px;
             width: 80%;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: 1px solid #aaa;
-            font-size: 1em;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1em;
         }
 
         button {
@@ -83,24 +93,40 @@
         /* Thank You Message */
         #thankYouMessage {
             display: none;
-            font-size: 1.5em;
+            font-size: 1.8em;
             color: green;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
         /* Contact Section */
         .contact {
-            margin-top: 40px;
+            margin-top: 50px;
             background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .contact h3 {
             color: #2C3E50;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 
@@ -158,11 +184,9 @@
 
     <!-- Firebase Integration -->
     <script type="module">
-        // Importing Firebase libraries
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBIvosQmzDmApd4nMRXJDgz6kE4V__sjI4",
             authDomain: "snacks-orders.firebaseapp.com",
@@ -173,11 +197,9 @@
             appId: "1:360986868091:web:c26ee5fd258d663a6d65de"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // Order Submission Function
         window.placeOrder = function() {
             const name = document.getElementById("name").value.trim();
             const address = document.getElementById("address").value.trim();
@@ -185,36 +207,17 @@
             const misalpav = document.getElementById("misalpav").value;
             const puranpoli = document.getElementById("puranpoli").value;
 
-            // Input Validation
             if (!name || !address) {
                 alert("Please enter your name and address.");
                 return;
             }
 
-            // Order Data Object
-            const order = {
-                name,
-                address,
-                vadapav: vadapav || 0,
-                misalpav: misalpav || 0,
-                puranpoli: puranpoli || 0,
-                timestamp: new Date().toISOString()
-            };
-
-            // Push Order to Firebase
-            push(ref(database, "orders"), order)
-                .then(() => {
-                    document.getElementById("orderForm").style.display = "none";
-                    document.getElementById("thankYouMessage").style.display = "block";
-                })
-                .catch((error) => {
-                    console.error("Error placing order:", error);
-                    alert("Error placing order. Please try again.");
-                });
+            push(ref(database, "orders"), { name, address, vadapav, misalpav, puranpoli });
+            document.getElementById("orderForm").style.display = "none";
+            document.getElementById("thankYouMessage").style.display = "block";
         };
     </script>
 
 </body>
 
 </html>
-
